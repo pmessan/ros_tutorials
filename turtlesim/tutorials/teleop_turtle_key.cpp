@@ -2,6 +2,9 @@
 #include <geometry_msgs/Twist.h>
 #include <signal.h>
 #include <stdio.h>
+#include <iostream>
+#include <string>
+#include <time.h>
 #ifndef _WIN32
 # include <termios.h>
 # include <unistd.h>
@@ -260,13 +263,25 @@ void TeleopTurtle::keyLoop()
     twist.linear.x = l_scale_*linear_;
     if(dirty ==true)
     {
-      twist_pub_.publish(twist);    
+      twist_pub_.publish(twist);
+      std::cout<<"Sent message at " << currentDateTime() <<std::endl;
       dirty=false;
     }
   }
 
 
   return;
+}
+
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string currentDateTime() {
+    time_t now = time(0);
+    struct tm tstruct;
+    char buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
 }
 
 
